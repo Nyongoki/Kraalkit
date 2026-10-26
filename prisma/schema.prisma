@@ -217,3 +217,268 @@ model NutrientRequirement {
 
   @@unique([speciesId, stage])
 }
+
+// ==========================================
+// AI STRAW VERIFICATION & GENETICS SUBSYSTEM
+// ==========================================
+
+enum ProductType {
+  SEXED_FEMALE
+  SEXED_MALE
+  CONVENTIONAL
+  BEEF
+  UNKNOWN
+}
+
+enum Confidence {
+  HIGH
+  MEDIUM
+  NONE
+}
+
+enum ProviderType {
+  SUPPLIER
+  DISTRIBUTOR
+  TECHNICIAN
+}
+
+enum EventStatus {
+  DRAFT
+  SENT
+  CONFIRMED
+  NOT_RECOGNISED
+  NO_REPLY
+}
+
+enum RuleField {
+  BREED
+  SUPPLIER
+  SEXED_MARKER
+  BATCH
+  SERIAL
+  BULL
+}
+
+enum PregnancyResult {
+  PREGNANT
+  NOT_PREGNANT
+  UNKNOWN
+}
+
+enum CalfSex {
+  FEMALE
+  MALE
+  UNKNOWN
+}
+
+enum FlagType {
+  HIGH_QUERY_COUNT
+  SEX_RATIO
+  PRICE_HIGH
+  PROVIDER_COMPLAINT
+  NOT_RECOGNISED
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Breed {
+  id     Int                 @id @default(autoincrement())
+  code   String              @unique @db.VarChar(10)
+  name   String
+  bulls  Bull[]
+  cows   Cow[]
+  events InseminationEvent[]
+}
+
+model Supplier {
+  id        Int                 @id @default(autoincrement())
+  name      String              @unique
+  country   String?
+  prefixes  SupplierPrefix[]
+  rules     LabelRule[]
+  bulls     Bull[]
+  batches   Batch[]
+  providers Provider[]
+  events    InseminationEvent[]
+}
+
+model SupplierPrefix {
+  id         Int      @id @default(autoincrement())
+  prefix     String   @unique @db.VarChar(20)
+  supplierId Int
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+}
+
+model LabelRule {
+  id          Int          @id @default(autoincrement())
+  supplierId  Int?
+  field       RuleField
+  pattern     String       @db.VarChar(255)
+  meaning     String
+  productType ProductType?
+  notes       String?      @db.Text
+  isActive    Boolean      @default(true)
+  supplier    Supplier?    @relation(fields: [supplierId], references: [id])
+}
+
+model Bull {
+  id             Int                 @id @default(autoincrement())
+  name           String
+  registrationId String?
+  breedId        Int?
+  supplierId     Int?
+  breed          Breed?              @relation(fields: [breedId], references: [id])
+  supplier       Supplier?           @relation(fields: [supplierId], references: [id])
+  batches        Batch[]
+  events         InseminationEvent[]
+
+  @@index([name])
+}
+
+model Batch {
+  id             Int                 @id @default(autoincrement())
+  supplierId     Int
+  batchCode      String              @db.VarChar(50)
+  bullId         Int?
+  productType    ProductType         @default(UNKNOWN)
+  productionDate DateTime?
+  blacklisted    Boolean             @default(false)
+  supplier       Supplier            @relation(fields: [supplierId], references: [id])
+  bull           Bull?               @relation(fields: [bullId], references: [id])
+  events         InseminationEvent[]
+  flags          FraudFlag[]
+
+  @@unique([supplierId, batchCode])
+}
+
+model Provider {
+  id             Int                 @id @default(autoincrement())
+  name           String
+  type           ProviderType
+  whatsappNumber String?             @db.VarChar(20)
+  county         String?
+  registered     Boolean             @default(false)
+  supplierId     Int?
+  supplier       Supplier?           @relation(fields: [supplierId], references: [id])
+  verifiedEvents InseminationEvent[] @relation("EventProvider")
+  doneEvents     InseminationEvent[] @relation("EventTechnician")
+  flags          FraudFlag[]
+}
+
+model Farmer {
+  id            Int                 @id @default(autoincrement())
+  name          String?
+  phone         String              @unique @db.VarChar(20)
+  county        String?
+  pinHash       String?             @db.VarChar(255)
+  phoneVerified Boolean             @default(false)
+  lastLoginAt   DateTime?
+  role          UserRole            @default(FARMER)
+  createdAt     DateTime            @default(now())
+  cows          Cow[]
+  events        InseminationEvent[]
+  queries       StrawQuery[]
+}
+
+model Cow {
+  id       Int                 @id @default(autoincrement())
+  farmerId Int
+  name     String
+  tagNo    String?
+  breedId  Int?
+  farmer   Farmer              @relation(fields: [farmerId], references: [id])
+  breed    Breed?              @relation(fields: [breedId], references: [id])
+  events   InseminationEvent[]
+}
+
+model StrawQuery {
+  id        Int      @id @default(autoincrement())
+  farmerId  Int?
+  rawText   String   @db.Text
+  codeKey   String   @db.VarChar(100)
+  county    String?
+  createdAt DateTime @default(now())
+  farmer    Farmer?  @relation(fields: [farmerId], references: [id])
+
+  @@index([codeKey, createdAt])
+}
+
+model InseminationEvent {
+  id           Int         @id @default(autoincrement())
+  referenceNo  String      @unique @db.VarChar(20)
+  farmerId     Int
+  cowId        Int?
+  rawText      String      @db.Text
+  decoded      Json
+  confidence   Confidence  @default(NONE)
+  breedId      Int?
+  supplierId   Int?
+  bullId       Int?
+  batchId      Int?
+  productType  ProductType @default(UNKNOWN)
+  technicianId Int?
+  providerId   Int?
+  priceKsh     Decimal?    @db.Decimal(10, 2)
+  eventDate    DateTime
+  county       String?
+  latitude     Decimal?    @db.Decimal(9, 6)
+  longitude    Decimal?    @db.Decimal(9, 6)
+  status       EventStatus @default(DRAFT)
+  sentAt       DateTime?
+  respondedAt  DateTime?
+  photoUrls    Json?
+  createdAt    DateTime    @default(now())
+  farmer       Farmer      @relation(fields: [farmerId], references: [id])
+  cow          Cow?        @relation(fields: [cowId], references: [id])
+  breed        Breed?      @relation(fields: [breedId], references: [id])
+  supplier     Supplier?   @relation(fields: [supplierId], references: [id])
+  bull         Bull?       @relation(fields: [bullId], references: [id])
+  batch        Batch?      @relation(fields: [batchId], references: [id])
+  technician   Provider?   @relation("EventTechnician", fields: [technicianId], references: [id])
+  provider     Provider?   @relation("EventProvider", fields: [providerId], references: [id])
+  outcome      Outcome?
+  flags        FraudFlag[]
+
+  @@index([status])
+  @@index([technicianId])
+  @@index([batchId])
+}
+
+model Outcome {
+  id        Int               @id @default(autoincrement())
+  eventId   Int               @unique
+  pregnancy PregnancyResult   @default(UNKNOWN)
+  checkedAt DateTime?
+  calfSex   CalfSex?
+  birthDate DateTime?
+  event     InseminationEvent @relation(fields: [eventId], references: [id])
+}
+
+model FraudFlag {
+  id         Int                @id @default(autoincrement())
+  type       FlagType
+  severity   Severity           @default(MEDIUM)
+  details    String             @db.Text
+  eventId    Int?
+  providerId Int?
+  batchId    Int?
+  resolved   Boolean            @default(false)
+  createdAt  DateTime           @default(now())
+  event      InseminationEvent? @relation(fields: [eventId], references: [id])
+  provider   Provider?          @relation(fields: [providerId], references: [id])
+  batch      Batch?             @relation(fields: [batchId], references: [id])
+}
+
+model PriceBenchmark {
+  id          Int         @id @default(autoincrement())
+  productType ProductType
+  minKsh      Decimal     @db.Decimal(10, 2)
+  maxKsh      Decimal     @db.Decimal(10, 2)
+  county      String?
+  source      String
+  asOf        DateTime
+}
