@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum TermStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+}
+
+enum Urgency {
+  LOW
+  MEDIUM
+  HIGH
+  EMERGENCY
+}
+
+enum VetType {
+  REGISTERED_VET
+  CLINIC
+  ANIMAL_HEALTH_WORKER
+}
+
+enum UserRole {
+  FARMER
+  VET
+  CONTRIBUTOR
+  ADMIN
+}
+
+model Language {
+  id         Int           @id @default(autoincrement())
+  code       String        @unique @db.VarChar(10)
+  name       String
+  nativeName String?
+  isActive   Boolean       @default(true)
+  terms      SymptomTerm[]
+}
+
+model Species {
+  id       Int                   @id @default(autoincrement())
+  slug     String                @unique
+  name     String
+  symptoms SymptomSpecies[]
+  diseases DiseaseSpecies[]
+  vets     VetSpecies[]
+  reports  Report[]
+  needs    NutrientRequirement[]
+}
+
+model Symptom {
+  id          Int              @id @default(autoincrement())
+  key         String           @unique
+  nameEn      String
+  description String?          @db.Text
+  terms       SymptomTerm[]
+  species     SymptomSpecies[]
+  diseases    DiseaseSymptom[]
+  reports     ReportSymptom[]
+}
+
+model SymptomSpecies {
+  symptomId Int
+  speciesId Int
+  symptom   Symptom @relation(fields: [symptomId], references: [id])
+  species   Species @relation(fields: [speciesId], references: [id])
+
+  @@id([symptomId, speciesId])
+}
+
+model SymptomTerm {
+  id            Int        @id @default(autoincrement())
+  symptomId     Int
+  languageId    Int
+  text          String     @db.VarChar(255)
+  variant       String?
+  status        TermStatus @default(PENDING)
+  contributor   String?
+  votes         Int        @default(0)
+  confirmedById Int?
+  confirmedAt   DateTime?
+  createdAt     DateTime   @default(now())
+  symptom       Symptom    @relation(fields: [symptomId], references: [id])
+  language      Language   @relation(fields: [languageId], references: [id])
+  confirmedBy   VetUser?   @relation(fields: [confirmedById], references: [id])
+
+  @@unique([symptomId, languageId, text])
+  @@index([languageId, status])
+  @@fulltext([text])
+}
+
+model Disease {
+  id         Int              @id @default(autoincrement())
+  slug       String           @unique
+  name       String
+  urgency    Urgency
+  notifiable Boolean          @default(false)
+  firstAid   String?          @db.Text
+  species    DiseaseSpecies[]
+  symptoms   DiseaseSymptom[]
+}
+
+model DiseaseSpecies {
+  diseaseId Int
+  speciesId Int
+  disease   Disease @relation(fields: [diseaseId], references: [id])
+  species   Species @relation(fields: [speciesId], references: [id])
+
+  @@id([diseaseId, speciesId])
+}
+
+model DiseaseSymptom {
+  diseaseId Int
+  symptomId Int
+  weight    Int     @default(1)
+  disease   Disease @relation(fields: [diseaseId], references: [id])
+  symptom   Symptom @relation(fields: [symptomId], references: [id])
+
+  @@id([diseaseId, symptomId])
+}
+
+model Vet {
+  id        Int          @id @default(autoincrement())
+  name      String
+  type      VetType
+  verified  Boolean      @default(false)
+  phone     String?
+  county    String?
+  latitude  Decimal      @db.Decimal(9, 6)
+  longitude Decimal      @db.Decimal(9, 6)
+  species   VetSpecies[]
+}
+
+model VetSpecies {
+  vetId     Int
+  speciesId Int
+  vet       Vet     @relation(fields: [vetId], references: [id])
+  species   Species @relation(fields: [speciesId], references: [id])
+
+  @@id([vetId, speciesId])
+}
+
+model VetUser {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  passwordHash String
+  confirmed    SymptomTerm[]
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         UserRole  @default(FARMER)
+  phone        String?
+  county       String?
+  farmSize     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Report {
+  id              Int             @id @default(autoincrement())
+  speciesId       Int
+  county          String?
+  latitude        Decimal?        @db.Decimal(9, 6)
+  longitude       Decimal?        @db.Decimal(9, 6)
+  animalsAffected Int             @default(1)
+  animalsDead     Int             @default(0)
+  isHerd          Boolean         @default(false)
+  herdSize        Int?
+  isSimulated     Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  species         Species         @relation(fields: [speciesId], references: [id])
+  symptoms        ReportSymptom[]
+
+  @@index([createdAt])
+}
+
+model ReportSymptom {
+  reportId  Int
+  symptomId Int
+  report    Report  @relation(fields: [reportId], references: [id])
+  symptom   Symptom @relation(fields: [symptomId], references: [id])
+
+  @@id([reportId, symptomId])
+}
+
+model Feed {
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  category        String
+  dryMatterPct    Decimal  @db.Decimal(5, 2)
+  crudeProteinPct Decimal  @db.Decimal(5, 2)
+  energyMjPerKg   Decimal  @db.Decimal(5, 2)
+  calciumPct      Decimal  @db.Decimal(5, 3)
+  phosphorusPct   Decimal  @db.Decimal(5, 3)
+  pricePerKg      Decimal? @db.Decimal(8, 2)
+}
+
+model NutrientRequirement {
+  id            Int     @id @default(autoincrement())
+  speciesId     Int
+  stage         String
+  proteinPct    Decimal @db.Decimal(5, 2)
+  energyMjPerKg Decimal @db.Decimal(5, 2)
+  calciumPct    Decimal @db.Decimal(5, 3)
+  phosphorusPct Decimal @db.Decimal(5, 3)
+  species       Species @relation(fields: [speciesId], references: [id])
+
+  @@unique([speciesId, stage])
+}

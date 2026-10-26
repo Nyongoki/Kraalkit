@@ -1,0 +1,16 @@
+name,type,verified,phone,county,latitude,longitude,species
+Kisii Veterinary Clinic,CLINIC,true,+254720000001,Kisii,-0.6817,34.7667,dairy-cattle|goats|sheep|poultry
+Nyamira County Vet Office,CLINIC,true,+254720000002,Nyamira,-0.5671,34.9340,dairy-cattle|goats|sheep
+Dr. Mwangi Mobile Vet,REGISTERED_VET,true,+254720000003,Kisii,-0.6950,34.7800,dairy-cattle|goats|sheep|poultry
+Migori Animal Health Centre,CLINIC,true,+254720000004,Migori,-1.0634,34.4731,dairy-cattle|goats|sheep|poultry
+Homa Bay Livestock Office,CLINIC,true,+254720000005,Homa Bay,-0.5273,34.4571,dairy-cattle|goats
+Kericho Vet Clinic,CLINIC,true,+254720000006,Kericho,-0.3674,35.2863,dairy-cattle|sheep
+Bomet Animal Health,CLINIC,false,+254720000007,Bomet,-0.7820,35.3402,dairy-cattle|goats|sheep
+Narok County Livestock,CLINIC,true,+254720000008,Narok,-1.0800,35.8710,dairy-cattle|goats|sheep
+Dr. Otieno Poultry Specialist,REGISTERED_VET,true,+254720000009,Kisii,-0.6700,34.7600,poultry
+Suneka Animal Health Worker,ANIMAL_HEALTH_WORKER,true,+254720000010,Kisii,-0.7500,34.8100,goats|sheep|poultry
+Gucha Vet Post,ANIMAL_HEALTH_WORKER,true,+254720000011,Kisii,-0.8123,34.8356,dairy-cattle|goats|sheep
+Keroka Veterinary Services,CLINIC,true,+254720000012,Nyamira,-0.5900,34.9200,dairy-cattle|goats|sheep|poultry
+Tabaka Mobile Vet Unit,REGISTERED_VET,false,+254720000013,Kisii,-0.6300,34.7300,dairy-cattle|goats
+South Mugirango Vet,ANIMAL_HEALTH_WORKER,true,+254720000014,Kisii,-0.7200,34.8500,dairy-cattle|sheep
+Rongo Livestock Office,CLINIC,true,+254720000015,Migori,-0.9967,34.6017,dairy-cattle|goats|sheep|poultry

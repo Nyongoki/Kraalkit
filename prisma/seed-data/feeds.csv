@@ -1,0 +1,21 @@
+name,category,dryMatterPct,crudeProteinPct,energyMjPerKg,calciumPct,phosphorusPct,pricePerKg
+Napier Grass,Forage,20.00,8.50,8.20,0.420,0.210,3.00
+Rhodes Grass Hay,Hay,88.00,7.20,7.80,0.380,0.180,8.00
+Maize Silage,Silage,30.00,7.80,10.50,0.270,0.220,5.00
+Maize Grain,Cereal,88.00,9.00,14.20,0.030,0.280,35.00
+Wheat Bran,By-product,88.00,16.50,11.80,0.130,1.010,22.00
+Soybean Meal,Protein supplement,90.00,44.00,13.50,0.320,0.650,70.00
+Sunflower Cake,Protein supplement,92.00,33.00,11.20,0.360,0.870,40.00
+Cottonseed Cake,Protein supplement,92.00,36.00,12.10,0.230,0.870,38.00
+Molasses,Energy supplement,75.00,4.50,12.80,0.830,0.080,15.00
+Dairy Meal (Commercial),Concentrate,88.00,16.00,12.50,0.800,0.500,45.00
+Lucerne Hay,Hay,90.00,18.00,9.20,1.470,0.240,30.00
+Sweet Potato Vines,Forage,14.00,16.80,9.50,0.720,0.260,4.00
+Desmodium,Legume forage,20.00,18.00,9.00,1.100,0.230,4.50
+Bone Meal,Mineral supplement,97.00,0.00,0.00,24.000,12.000,60.00
+Limestone,Mineral supplement,100.00,0.00,0.00,38.000,0.010,10.00
+Dicalcium Phosphate,Mineral supplement,100.00,0.00,0.00,23.000,18.500,80.00
+Millet Grain,Cereal,89.00,11.00,13.50,0.040,0.310,30.00
+Sorghum Grain,Cereal,86.00,10.00,13.20,0.030,0.290,28.00
+Fish Meal,Protein supplement,92.00,60.00,13.80,4.500,2.700,120.00
+Groundnut Cake,Protein supplement,92.00,45.00,12.90,0.170,0.590,65.00

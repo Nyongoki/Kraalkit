@@ -1,0 +1,31 @@
+key,nameEn,description,species
+fever,Fever,Elevated body temperature above normal range,dairy-cattle|goats|sheep|poultry
+nasal-discharge,Nasal Discharge,Discharge or mucus from the nostrils,dairy-cattle|goats|sheep|poultry
+coughing,Coughing,Repeated forceful expulsion of air from the lungs,dairy-cattle|goats|sheep|poultry
+diarrhea,Diarrhea,Loose or liquid frequent stools,dairy-cattle|goats|sheep|poultry
+loss-of-appetite,Loss of Appetite,Reduced or absent interest in feed,dairy-cattle|goats|sheep|poultry
+lameness,Lameness,Difficulty walking or bearing weight on one or more legs,dairy-cattle|goats|sheep
+milk-drop,Milk Drop,Sudden reduction in milk yield,dairy-cattle|goats|sheep
+bloat,Bloat,Distension of the rumen or abdomen with gas,dairy-cattle|goats|sheep
+mouth-lesions,Mouth Lesions,Sores blisters or ulcers on the lips gums or tongue,dairy-cattle|goats|sheep
+foot-lesions,Foot Lesions,Sores or ulcers between the toes or on the hooves,dairy-cattle|goats|sheep
+skin-lesions,Skin Lesions,Visible sores lumps or abnormal skin patches,dairy-cattle|goats|sheep|poultry
+weight-loss,Weight Loss,Progressive loss of body condition,dairy-cattle|goats|sheep|poultry
+abortions,Abortions,Spontaneous pregnancy loss before full term,dairy-cattle|goats|sheep
+eye-discharge,Eye Discharge,Watery or purulent discharge from the eyes,dairy-cattle|goats|sheep|poultry
+depression,Depression,Dullness lethargy reduced responsiveness,dairy-cattle|goats|sheep|poultry
+pale-mucous,Pale Mucous Membranes,Pale or white gums and inner eyelids,dairy-cattle|goats|sheep
+swollen-lymph-nodes,Swollen Lymph Nodes,Enlarged lymph nodes detectable under the skin,dairy-cattle|goats|sheep
+difficulty-breathing,Difficulty Breathing,Labored breathing open-mouth breathing or rapid respiration,dairy-cattle|goats|sheep|poultry
+sudden-death,Sudden Death,Death without obvious prior illness,dairy-cattle|goats|sheep|poultry
+blood-in-urine,Blood in Urine,Red or dark colored urine,dairy-cattle|goats|sheep
+rectal-prolapse,Rectal Prolapse,Protrusion of the rectum outside the body,dairy-cattle|goats|sheep|poultry
+reduced-rumen-sounds,Reduced Rumen Sounds,Fewer than normal rumen contractions per minute,dairy-cattle|goats|sheep
+head-tilt,Head Tilt,Persistent tilting of the head to one side,dairy-cattle|goats|sheep|poultry
+staggering,Staggering,Loss of balance or uncoordinated movement,dairy-cattle|goats|sheep|poultry
+convulsions,Convulsions,Involuntary muscle contractions or seizures,dairy-cattle|goats|sheep|poultry
+reddened-skin,Reddened Skin,Inflamed or reddish discoloration of the skin,poultry
+drop-in-egg-production,Drop in Egg Production,Significant reduction in the number of eggs laid,poultry
+watery-droppings,Watery Droppings,Abnormally liquid droppings in poultry,poultry
+swollen-head,Swollen Head,Swelling around the head and face,poultry
+paralysis,Paralysis,Loss of voluntary movement in legs or wings,poultry

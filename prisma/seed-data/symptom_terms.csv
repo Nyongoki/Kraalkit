@@ -1,0 +1,209 @@
+symptomKey,languageCode,text,status
+fever,sw,Homa,CONFIRMED
+fever,sw,Kupanda joto,CONFIRMED
+fever,guz,Omwiko,CONFIRMED
+fever,ki,Ũrugarĩ mũingĩ,CONFIRMED
+fever,ki,Mũrimũ wa mwĩrĩ kũhĩa,CONFIRMED
+fever,luo,Midhusu,CONFIRMED
+fever,luo,Liel,CONFIRMED
+fever,luy,Oluhya lwo mubiri,CONFIRMED
+fever,luy,Omubili omululu,CONFIRMED
+fever,kln,Lalwet,CONFIRMED
+fever,kln,Komiit,CONFIRMED
+fever,kam,Mwaki wa mwĩĩ,CONFIRMED
+fever,kam,Uvyũ wa mwĩĩ,CONFIRMED
+fever,mas,Enkijape,CONFIRMED
+fever,mas,Erowua enkoshoke,CONFIRMED
+fever,som,Xummad,CONFIRMED
+fever,som,Qandho,CONFIRMED
+fever,tuv,Ngikuriete,CONFIRMED
+fever,orm,Qabanqabaa,CONFIRMED
+fever,mer,Ũrugarĩ wa mwĩrĩ,CONFIRMED
+fever,en,High temperature,CONFIRMED
+fever,en,Feverish,CONFIRMED
+coughing,sw,Kukohoa,CONFIRMED
+coughing,guz,Okukoora,CONFIRMED
+coughing,ki,Gũkũha,CONFIRMED
+coughing,ki,Gĩkorora,CONFIRMED
+coughing,luo,Ahoya,CONFIRMED
+coughing,luo,Koro,CONFIRMED
+coughing,luy,Okhukhohola,CONFIRMED
+coughing,kln,Kerket,CONFIRMED
+coughing,kln,Koorkeet,CONFIRMED
+coughing,kam,Kũkua,CONFIRMED
+coughing,kam,Kĩkoo,CONFIRMED
+coughing,mas,Enkororoi,CONFIRMED
+coughing,som,Qufac,CONFIRMED
+coughing,tuv,Ekae,CONFIRMED
+coughing,orm,Qufaa,CONFIRMED
+coughing,mer,Gũkua kĩa mwĩrĩ,CONFIRMED
+coughing,en,Cough,CONFIRMED
+coughing,en,Heavy coughing,CONFIRMED
+diarrhea,sw,Kuharisha,CONFIRMED
+diarrhea,sw,Kuhara,CONFIRMED
+diarrhea,guz,Ensari,CONFIRMED
+diarrhea,ki,Kũwara,CONFIRMED
+diarrhea,ki,Kũharwo,CONFIRMED
+diarrhea,luo,Diep,CONFIRMED
+diarrhea,luo,Ndira,CONFIRMED
+diarrhea,luy,Okhusulila,CONFIRMED
+diarrhea,kln,Kiboriet,CONFIRMED
+diarrhea,kln,Chepkereng,CONFIRMED
+diarrhea,kam,Kũwathiwa,CONFIRMED
+diarrhea,kam,Kũthĩĩwa nthei,CONFIRMED
+diarrhea,mas,Enkolopion,CONFIRMED
+diarrhea,som,Shuban,CONFIRMED
+diarrhea,tuv,Akoroi,CONFIRMED
+diarrhea,orm,Albaati,CONFIRMED
+diarrhea,mer,Kũharwa,CONFIRMED
+diarrhea,en,Loose stools,CONFIRMED
+diarrhea,en,Watery stool,CONFIRMED
+mouth-lesions,sw,Vidonda kinywani,CONFIRMED
+mouth-lesions,sw,Malengelenge mdomoni,CONFIRMED
+mouth-lesions,guz,Ebisore en'akanwa,CONFIRMED
+mouth-lesions,ki,Ironda kanua-inĩ,CONFIRMED
+mouth-lesions,ki,Ironda rũrĩmĩ-inĩ,CONFIRMED
+mouth-lesions,luo,Adhonde e dhok,CONFIRMED
+mouth-lesions,luo,Hadhonde e lep,CONFIRMED
+mouth-lesions,luy,Ebilonda mumunwa,CONFIRMED
+mouth-lesions,kln,Moinget eng kutit,CONFIRMED
+mouth-lesions,kam,Mavũyo kanyũnĩ,CONFIRMED
+mouth-lesions,mas,Intalangi e kutuk,CONFIRMED
+mouth-lesions,som,Nabaro afka ah,CONFIRMED
+mouth-lesions,orm,Madaa afaanii,CONFIRMED
+mouth-lesions,mer,Ironda kanyũa,CONFIRMED
+mouth-lesions,en,Mouth blisters,CONFIRMED
+mouth-lesions,en,Sores in mouth,CONFIRMED
+foot-lesions,sw,Vidonda miguuni,CONFIRMED
+foot-lesions,sw,Kupasukasuka kwato,CONFIRMED
+foot-lesions,guz,Ebisore en'amagulu,CONFIRMED
+foot-lesions,ki,Ironda magũrũ-inĩ,CONFIRMED
+foot-lesions,ki,Ironda ngũrũ-inĩ,CONFIRMED
+foot-lesions,luo,Adhonde e tiend dhok,CONFIRMED
+foot-lesions,luy,Ebilonda mulukulu,CONFIRMED
+foot-lesions,kln,Moinget eng keljek,CONFIRMED
+foot-lesions,kam,Mavũyo maaũnĩ,CONFIRMED
+foot-lesions,mas,Intalangi oo ngejek,CONFIRMED
+foot-lesions,som,Nabaro cagtaha ah,CONFIRMED
+foot-lesions,orm,Madaa miilaa,CONFIRMED
+foot-lesions,mer,Ironda magũrũ,CONFIRMED
+foot-lesions,en,Hoof sores,CONFIRMED
+foot-lesions,en,Cracked hooves,CONFIRMED
+loss-of-appetite,sw,Kukosa hamu ya kula,CONFIRMED
+loss-of-appetite,guz,Gotonya chiakwe,CONFIRMED
+loss-of-appetite,ki,Kwaga kũrĩa rĩo,CONFIRMED
+loss-of-appetite,luo,Kwer chiemo,CONFIRMED
+loss-of-appetite,luy,Okhuloba ebiokhulia,CONFIRMED
+loss-of-appetite,kln,Mesoot,CONFIRMED
+loss-of-appetite,kam,Kũlea kũya,CONFIRMED
+loss-of-appetite,mas,Aitae ndaiki,CONFIRMED
+loss-of-appetite,som,Cunto xumo,CONFIRMED
+loss-of-appetite,orm,Nyaata diduu,CONFIRMED
+loss-of-appetite,en,Not eating,CONFIRMED
+loss-of-appetite,en,Off feed,CONFIRMED
+milk-drop,sw,Kupungua kwa maziwa,CONFIRMED
+milk-drop,guz,Amaswa amanyinyi,CONFIRMED
+milk-drop,ki,Kũnyihia iria,CONFIRMED
+milk-drop,luo,Doko mar chak,CONFIRMED
+milk-drop,luy,Okhukeba khwe mabere,CONFIRMED
+milk-drop,kln,Riringik cheko,CONFIRMED
+milk-drop,kam,Kũtheva kwa ĩa,CONFIRMED
+milk-drop,mas,Aitororo kule,CONFIRMED
+milk-drop,som,Caano yaraan,CONFIRMED
+milk-drop,en,Drop in milk,CONFIRMED
+bloat,sw,Kuvimba tumbo,CONFIRMED
+bloat,sw,Kufura tumbo,CONFIRMED
+bloat,guz,Entumba erimba,CONFIRMED
+bloat,ki,Kũhĩa nda,CONFIRMED
+bloat,ki,Kũimbirwo nĩ nda,CONFIRMED
+bloat,luo,Kuot mar ich,CONFIRMED
+bloat,luy,Okhubimba inda,CONFIRMED
+bloat,kln,Sutut,CONFIRMED
+bloat,kln,Puuset,CONFIRMED
+bloat,kam,Kũvĩva ivu,CONFIRMED
+bloat,mas,Enkoshoke naitururue,CONFIRMED
+bloat,som,Dibiro,CONFIRMED
+bloat,orm,Bokoka garaa,CONFIRMED
+bloat,en,Swollen belly,CONFIRMED
+bloat,en,Rumen bloat,CONFIRMED
+lameness,sw,Ukwasi,CONFIRMED
+lameness,sw,Kuchechemea,CONFIRMED
+lameness,guz,Omokwasi,CONFIRMED
+lameness,ki,Gũthua,CONFIRMED
+lameness,luo,Tiend ng'och,CONFIRMED
+lameness,luo,Rang'iny,CONFIRMED
+lameness,luy,Okhutebuka,CONFIRMED
+lameness,kln,Rong'et,CONFIRMED
+lameness,kam,Kũkũna mwanya,CONFIRMED
+lameness,mas,Alimisho,CONFIRMED
+lameness,som,Curyaanimo,CONFIRMED
+lameness,en,Limping,CONFIRMED
+lameness,en,Cannot walk properly,CONFIRMED
+sudden-death,sw,Kifo cha ghafla,CONFIRMED
+sudden-death,guz,Erifu erikaraba,CONFIRMED
+sudden-death,ki,Gĩkuũ kĩa kĩbũrĩ,CONFIRMED
+sudden-death,luo,Tho mar apoya,CONFIRMED
+sudden-death,luy,Elifwa liomurubia,CONFIRMED
+sudden-death,kln,Kameet nebo ng'al,CONFIRMED
+sudden-death,kam,Kĩkw'ũ kya mĩtũkĩ,CONFIRMED
+sudden-death,mas,Eye peyo,CONFIRMED
+sudden-death,som,Dhimasho degdeg ah,CONFIRMED
+sudden-death,en,Died suddenly,CONFIRMED
+nasal-discharge,sw,Makamasi,CONFIRMED
+nasal-discharge,guz,Amasasi,CONFIRMED
+nasal-discharge,ki,Mĩra,CONFIRMED
+nasal-discharge,luo,Hura,CONFIRMED
+nasal-discharge,luy,Amalwela,CONFIRMED
+nasal-discharge,kln,Seret,CONFIRMED
+nasal-discharge,som,San duuf,CONFIRMED
+nasal-discharge,en,Runny nose,CONFIRMED
+swollen-lymph-nodes,sw,Uvimbe wa tezi,CONFIRMED
+swollen-lymph-nodes,guz,Entumba ya tezi,CONFIRMED
+swollen-lymph-nodes,ki,Kũimba kwa ngathĩka,CONFIRMED
+swollen-lymph-nodes,luo,Kuot mar alwanya,CONFIRMED
+swollen-lymph-nodes,luy,Ebitutu byo mumulimo,CONFIRMED
+swollen-lymph-nodes,kln,Kututiet,CONFIRMED
+swollen-lymph-nodes,kam,Kũvĩva kwa nzaiko,CONFIRMED
+swollen-lymph-nodes,som,Qanjidhada bararsan,CONFIRMED
+swollen-lymph-nodes,en,Swollen glands,CONFIRMED
+difficulty-breathing,sw,Ugumu wa kupumua,CONFIRMED
+difficulty-breathing,guz,Oborino boborutu,CONFIRMED
+difficulty-breathing,ki,Kũhuhia na hinya,CONFIRMED
+difficulty-breathing,luo,Yueyo gi teko,CONFIRMED
+difficulty-breathing,luy,Okhuheela obululu,CONFIRMED
+difficulty-breathing,kln,Sasyet,CONFIRMED
+difficulty-breathing,kam,Kũveva na vinya,CONFIRMED
+difficulty-breathing,som,Neefsasho adag,CONFIRMED
+difficulty-breathing,en,Panting,CONFIRMED
+difficulty-breathing,en,Short of breath,CONFIRMED
+skin-lesions,sw,Vidonda ngozini,CONFIRMED
+skin-lesions,guz,Ebisore en'erobo,CONFIRMED
+weight-loss,sw,Kupoteza uzito,CONFIRMED
+weight-loss,guz,Gofiswa,CONFIRMED
+abortions,sw,Kutoa mimba,CONFIRMED
+abortions,guz,Okogwa,CONFIRMED
+abortions,ki,Kũruta mĩmera,CONFIRMED
+abortions,luo,Golo ich,CONFIRMED
+eye-discharge,sw,Kutoka kwa machozi,CONFIRMED
+eye-discharge,guz,Amachozi,CONFIRMED
+depression,sw,Usingizi,CONFIRMED
+depression,guz,Orwangirigiri,CONFIRMED
+pale-mucous,sw,Ufizi mweupe,CONFIRMED
+pale-mucous,guz,Amasomo aratubwire,CONFIRMED
+blood-in-urine,sw,Damu kwenye mkojo,CONFIRMED
+blood-in-urine,guz,Amaraso en'endagara,CONFIRMED
+convulsions,sw,Degedege,CONFIRMED
+convulsions,guz,Ebikungu,CONFIRMED
+staggering,sw,Kutetemeka,CONFIRMED
+staggering,guz,Okogaragara,CONFIRMED
+drop-in-egg-production,sw,Kupungua kwa mayai,CONFIRMED
+drop-in-egg-production,ki,Kũnyihia matumbĩ,CONFIRMED
+drop-in-egg-production,luo,Doko mar tong',CONFIRMED
+drop-in-egg-production,en,Drop in eggs,CONFIRMED
+watery-droppings,sw,Kinyesi cha maji,CONFIRMED
+watery-droppings,ki,Kĩoro kĩa maĩ,CONFIRMED
+watery-droppings,luo,Onding' ma pi,CONFIRMED
+swollen-head,sw,Kuvimba kwa kichwa,CONFIRMED
+swollen-head,ki,Kũimba kwa mũtwe,CONFIRMED
+paralysis,sw,Kupooza,CONFIRMED
+paralysis,ki,Kũgwa mĩkiha,CONFIRMED
