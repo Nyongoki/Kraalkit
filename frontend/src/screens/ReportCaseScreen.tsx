@@ -22,15 +22,17 @@ export const ReportCaseScreen: React.FC<ReportCaseScreenProps> = ({ setCurrentTa
   const {
     t,
     selectedSpecies,
+    animalInfo,
     selectedSymptoms,
     location,
     isHerd: sessionIsHerd,
     herdSize: sessionHerdSize,
+    affectedCount,
   } = useSession();
 
   const [isHerd, setIsHerd] = useState(sessionIsHerd);
   const [herdSize, setHerdSize] = useState(sessionHerdSize || 30);
-  const [affected, setAffected] = useState(isHerd ? 5 : 1);
+  const [affected, setAffected] = useState(affectedCount || (sessionIsHerd ? 5 : 1));
   const [dead, setDead] = useState(0);
   const [county, setCounty] = useState(location.county || 'Kisii');
   const [submitting, setSubmitting] = useState(false);
@@ -130,24 +132,29 @@ export const ReportCaseScreen: React.FC<ReportCaseScreenProps> = ({ setCurrentTa
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-xs space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
           {/* Pre-filled Clinical Context Summary */}
-          <div className="bg-purple-50/70 border border-purple-200 rounded-2xl p-4">
-            <div className="flex items-center gap-2 mb-1.5">
-              <ShieldCheck className="w-4 h-4 text-purple-700" />
-              <span className="text-xs font-black text-purple-950 uppercase tracking-wider">
+          <div className="bg-purple-50/70 border border-purple-200 rounded-xl p-3">
+            <div className="flex items-center gap-1.5 mb-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-purple-700" />
+              <span className="text-[10px] font-black text-purple-950 uppercase tracking-wider">
                 Clinical Context
               </span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-purple-900">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-purple-900">
               <div>
                 Species: <strong className="font-black text-purple-950">{selectedSpecies?.name}</strong>
               </div>
               <div>
                 Report Location: <strong className="font-black text-purple-950">{county} County</strong>
               </div>
+              {animalInfo?.nameOrTag && (
+                <div className="sm:col-span-2">
+                  Animal Patient: <strong className="font-black text-purple-950">{animalInfo.nameOrTag}</strong> ({animalInfo.stage}{animalInfo.age ? `, ${animalInfo.age}` : ''})
+                </div>
+              )}
             </div>
-            <p className="text-xs text-purple-800 mt-1.5">
+            <p className="text-[11px] text-purple-800 mt-1">
               Signs:{' '}
               <span className="font-semibold">
                 {selectedSymptoms.length > 0
@@ -159,28 +166,28 @@ export const ReportCaseScreen: React.FC<ReportCaseScreenProps> = ({ setCurrentTa
 
           {/* Scope Selection: Individual Animal vs Herd Outbreak */}
           <div>
-            <label className="text-xs font-black text-slate-800 uppercase tracking-wider block mb-2">
+            <label className="text-[10px] font-black text-slate-800 uppercase tracking-wider block mb-1.5">
               Select Case Scope *
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <div
                 onClick={() => {
                   setIsHerd(false);
                   if (affected > 1) setAffected(1);
                 }}
-                className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${
+                className={`p-2.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   !isHerd
-                    ? 'bg-emerald-50/80 border-emerald-500 ring-2 ring-emerald-200 text-emerald-950 font-bold'
+                    ? 'bg-emerald-50/80 border-emerald-500 ring-1 ring-emerald-300 text-emerald-950 font-bold'
                     : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${!isHerd ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
-                    <PawPrint className="w-5 h-5" />
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${!isHerd ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                    <PawPrint className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <p className="text-xs font-black">Single Animal</p>
-                    <p className="text-[11px] text-slate-500">1 individual animal affected</p>
+                    <p className="text-[10px] text-slate-500">1 individual animal affected</p>
                   </div>
                 </div>
               </div>
@@ -190,19 +197,19 @@ export const ReportCaseScreen: React.FC<ReportCaseScreenProps> = ({ setCurrentTa
                   setIsHerd(true);
                   if (affected < 2) setAffected(3);
                 }}
-                className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${
+                className={`p-2.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   isHerd
-                    ? 'bg-purple-50/90 border-purple-500 ring-2 ring-purple-200 text-purple-950 font-bold'
+                    ? 'bg-purple-50/90 border-purple-500 ring-1 ring-purple-300 text-purple-950 font-bold'
                     : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isHerd ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
-                    <Users className="w-5 h-5" />
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${isHerd ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                    <Users className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <p className="text-xs font-black">Multiple Animals / Herd Outbreak</p>
-                    <p className="text-[11px] text-purple-700">Cluster or boma-wide transmission</p>
+                    <p className="text-xs font-black">Multiple Animals / Herd</p>
+                    <p className="text-[10px] text-purple-700">Cluster or boma transmission</p>
                   </div>
                 </div>
               </div>
@@ -211,8 +218,8 @@ export const ReportCaseScreen: React.FC<ReportCaseScreenProps> = ({ setCurrentTa
 
           {/* Herd Size (Only if Herd selected) */}
           {isHerd && (
-            <div className="bg-purple-50/50 p-4 rounded-2xl border border-purple-200 animate-fadeIn">
-              <label className="text-xs font-black text-purple-950 block mb-1.5">
+            <div className="bg-purple-50/50 p-3 rounded-xl border border-purple-200 animate-fadeIn">
+              <label className="text-[10px] font-black text-purple-950 block mb-1">
                 Total Animals in the Herd / Flock *
               </label>
               <input
@@ -223,15 +230,15 @@ export const ReportCaseScreen: React.FC<ReportCaseScreenProps> = ({ setCurrentTa
                 value={herdSize}
                 onChange={(e) => setHerdSize(parseInt(e.target.value, 10) || 10)}
                 placeholder="e.g. 35"
-                className="w-full bg-white border border-purple-300 rounded-xl p-3 text-sm font-black text-purple-950 focus:ring-2 focus:ring-purple-500"
+                className="w-full bg-white border border-purple-300 rounded-lg p-2 text-xs font-black text-purple-950 focus:ring-2 focus:ring-purple-500"
               />
             </div>
           )}
 
           {/* Counts: Affected & Dead */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
-              <label className="text-xs font-black text-slate-700 block mb-1.5">
+              <label className="text-[10px] font-black text-slate-700 block mb-1">
                 {t.affectedCount} *
               </label>
               <input
@@ -241,12 +248,12 @@ export const ReportCaseScreen: React.FC<ReportCaseScreenProps> = ({ setCurrentTa
                 required
                 value={affected}
                 onChange={(e) => setAffected(parseInt(e.target.value, 10) || 1)}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm font-black text-slate-900 focus:ring-2 focus:ring-purple-500"
+                className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:ring-2 focus:ring-purple-500"
               />
             </div>
 
             <div>
-              <label className="text-xs font-black text-slate-700 block mb-1.5">
+              <label className="text-[10px] font-black text-slate-700 block mb-1">
                 {t.deadCount} (if any)
               </label>
               <input
@@ -255,20 +262,20 @@ export const ReportCaseScreen: React.FC<ReportCaseScreenProps> = ({ setCurrentTa
                 max="5000"
                 value={dead}
                 onChange={(e) => setDead(parseInt(e.target.value, 10) || 0)}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm font-black text-slate-900 focus:ring-2 focus:ring-purple-500"
+                className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs font-black text-slate-900 focus:ring-2 focus:ring-purple-500"
               />
             </div>
           </div>
 
           {/* County / Location */}
           <div>
-            <label className="text-xs font-black text-slate-700 block mb-1.5">
+            <label className="text-[10px] font-black text-slate-700 block mb-1">
               {t.county} *
             </label>
             <select
               value={county}
               onChange={(e) => setCounty(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-purple-500"
+              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-purple-500"
             >
               {kenyanCounties.map((c) => (
                 <option key={c} value={c}>
@@ -279,7 +286,7 @@ export const ReportCaseScreen: React.FC<ReportCaseScreenProps> = ({ setCurrentTa
           </div>
 
           {error && (
-            <p className="text-xs font-bold text-rose-600 bg-rose-50 border border-rose-200 p-3 rounded-xl">
+            <p className="text-xs font-bold text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-lg">
               {error}
             </p>
           )}
@@ -287,9 +294,9 @@ export const ReportCaseScreen: React.FC<ReportCaseScreenProps> = ({ setCurrentTa
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-purple-700 hover:bg-purple-800 text-white text-xs sm:text-sm font-black py-4 rounded-2xl shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50"
+            className="w-full bg-purple-700 hover:bg-purple-800 text-white text-xs sm:text-sm font-black py-2.5 rounded-xl shadow-2xs flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-3.5 h-3.5" />
             <span>{submitting ? 'Transmitting report...' : t.submitReport}</span>
           </button>
         </form>

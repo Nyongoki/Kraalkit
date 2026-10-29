@@ -1,0 +1,168 @@
+================================================================================
+KRAALKIT — SAMPLE SEMEN STRAW DEMONSTRATION INPUTS
+================================================================================
+Use this file during product pitches, investor walkthroughs, and live farmer demos.
+Copy and paste the exact straw code strings into the "Verify Straw" screen.
+
+--------------------------------------------------------------------------------
+SECTION 1: QUICK-COPY STRINGS (READY TO PASTE INTO KRAALKIT SEARCH)
+--------------------------------------------------------------------------------
+
+[Code 1 - KAGRC Friesian (National Stud, Conventional)]:
+KAGRC FR SIRIKWA B2024-09 CONV CSS 24185
+
+[Code 2 - ABS Global Sexcel (Sexed Female 90% Heifer)]:
+29HO VAL-BISSON DOORMAN SEXCEL LOT-8812 CSS 20240915
+
+[Code 3 - World Wide Sires (Sexed Ultra 4M Female)]:
+7HO BRAEDALE GOLDWYN 4M SEXED LOT-99201 CSS 24045
+
+[Code 4 - KAGRC Ayrshire (National Stud, High Milk)]:
+KAGRC AY SIMBA B2023-14 CONV KVB 23300
+
+[Code 5 - KAGRC Sahiwal (Dual-Purpose Beef & Dairy)]:
+KAGRC SA KILIMO 89201 BEEF KEBS 24110
+
+[Code 6 - KAGRC Boran (Hardy Pastoralist Beef)]:
+KAGRC BR BORAN WARRIOR 89201 BEEF KVB 24150
+
+[Code 7 - Semex Jersey (Butterfat Specialist)]:
+200JE FOREST GLEN ACTION CONV LOT-4410 ICAR 24090
+
+[Code 8 - Faded / OCR Noisy Straw (Tests AI Infill & Heuristics)]:
+29H0 ABS D00RMAN SEXCEL 8812
+
+[Code 9 - Frost-Damaged KAGRC Straw (Tests Character Correction)]:
+KAGRC FR SIRIKWA B24-09 C0NV
+
+
+================================================================================
+SECTION 2: STEP-BY-STEP DEMO SCENARIOS & TALKING POINTS
+================================================================================
+
+--------------------------------------------------------------------------------
+DEMO 1: GENUINE SEXED FEMALE SEMEN (90% HEIFER GUARANTEE)
+--------------------------------------------------------------------------------
+Straw Code:
+29HO VAL-BISSON DOORMAN SEXCEL LOT-8812 CSS 20240915
+
+What to show the audience:
+  1. Instant Supplier Identification: "ABS Global / Genus (Sexcel)" (USA/UK).
+  2. Pedigree Bull Detection: Val-Bisson Doorman (Reg: CANM107281711).
+  3. Technology Seal: Sexed Female (Female ♀ ~90% Heifer Probability).
+  4. Benchmark Price Calibration: KSh 6,500 – 9,500 (Fair market value verified).
+  5. Cryo Production Date: 15 Sept 2024.
+  6. Certified Semen Services (CSS) Quality Seal: Confirms disease-free stud sire.
+  7. 1-Click Save to Herd Ledger: Generates 21-day return date & 280-day calving forecast!
+
+
+--------------------------------------------------------------------------------
+DEMO 2: CONVENTIONAL KENYAN NATIONAL GENETICS (KAGRC / CAIS)
+--------------------------------------------------------------------------------
+Straw Code:
+KAGRC FR SIRIKWA B2024-09 CONV CSS 24185
+
+What to show the audience:
+  1. Supplier: Kenya Animal Genetic Resources Centre (KAGRC Lower Kabete).
+  2. Sire: KAGRC Sirikwa (Reg: KE-HO-0891, Dairy Friesian).
+  3. Technology: Conventional (50/50 Male/Female split).
+  4. Benchmark Price: KSh 1,200 – 2,500.
+  5. Julian Production Date: 3 Jul 2024 (Decoded from Julian day 185).
+  6. Shows how Kraalkit supports both local government studs and international imports.
+
+
+--------------------------------------------------------------------------------
+DEMO 3: THE "KILLER PITCH" — DETECTING CONVENTIONAL-AS-SEXED FRAUD
+--------------------------------------------------------------------------------
+Context:
+  A rogue technician visits a smallholder farm in Bomet or Kisii.
+  He charges the farmer KSh 8,500 claiming he is inseminating high-grade "Sexed Female"
+  semen to guarantee a heifer calf. But he physically inserts a cheap KSh 1,200 conventional straw.
+
+Demonstration Steps in "Audit Receipt" Mode:
+  - Input Physical Straw Code:
+    KAGRC FR SIRIKWA B2024-09 CONV CSS 24185
+  - Technician Receipt Claims:
+    * Bull Claimed: KAGRC SIRIKWA
+    * Product Type Claimed: SEXED FEMALE
+    * Price Charged: KSh 8,500
+
+Expected Kraalkit Output to Highlight:
+  - 🚨 RED BANNER: "CRITICAL MISMATCH: Receipt claims sexed genetics but straw is conventional!"
+  - CRITICAL OVERCHARGE ALERT: Explains that the farmer paid KSh 8,500 for a straw that only
+    provides a 50/50 probability, suffering an estimated loss of ~KSh 6,000 to KSh 7,000.
+  - 1-Click WhatsApp Depo Audit: Automatically generates an encrypted report ready to send to
+    the supplier depo and County Veterinary Officer (SCVO).
+
+
+--------------------------------------------------------------------------------
+DEMO 4: DETECTING BREED & SIRE SUBSTITUTION
+--------------------------------------------------------------------------------
+Context:
+  The farmer ordered high-milk Dairy Friesian genetics to boost daily milk liters,
+  but the technician mistakenly or deceptively used a beef cross.
+
+Demonstration Steps in "Audit Receipt" Mode:
+  - Input Physical Straw Code:
+    KAGRC SA KILIMO 89201 BEEF KEBS 24110
+  - Technician Receipt Claims:
+    * Bull Claimed: KAGRC SIRIKWA
+    * Breed Claimed: Friesian
+    * Price Charged: KSh 3,500
+
+Expected Kraalkit Output to Highlight:
+  - ⚠️ AMBER WARNING: "SIRE & BREED MISMATCH"
+  - Explains: "Receipt states Friesian, but physical straw identifies Sahiwal (KAGRC KILIMO).
+    Resulting calf will inherit beef traits and lower milk production."
+
+
+--------------------------------------------------------------------------------
+DEMO 5: NOISY OCR & RUBBED-OFF INK RESILIENCE (AI INFILL)
+--------------------------------------------------------------------------------
+Context:
+  Straws stored inside liquid nitrogen flasks frequently develop frost or rubbed-off ink.
+  Standard barcode readers fail completely. Kraalkit uses OCR error tolerance & RAX AI.
+
+Straw Code:
+29H0 ABS D00RMAN SEXCEL 8812
+
+What to show the audience:
+  1. Notice lookalike characters: "29H0" (Zero instead of letter O) and "D00RMAN" (zeros instead of O's).
+  2. Notice missing tokens: NAAB registration and country prefixes are missing.
+  3. Kraalkit AI instantly infers:
+     - Stud: ABS Global
+     - Sire: Val-Bisson Doorman
+     - Breed: Holstein Friesian
+     - Type: Sexed Female
+  4. Demonstrates real-world African field readiness where conditions are messy.
+
+
+--------------------------------------------------------------------------------
+DEMO 6: PASTORALIST & ASAL GENETICS (BORAN & SAHIWAL)
+--------------------------------------------------------------------------------
+Boran Beef Straw Code:
+KAGRC BR BORAN WARRIOR 89201 BEEF KVB 24150
+
+Sahiwal Dual-Purpose Straw Code:
+KAGRC SA KILIMO 89201 BEEF KEBS 24110
+
+What to show the audience:
+  1. Proves Kraalkit is not just for high-rainfall central dairy zones.
+  2. Supports arid and semi-arid lands (ASAL) pastoralists (Turkana, Marsabit, Kajiado, Garissa).
+  3. Confirms Kenyan Veterinary Board (KVB) and KEBS national livestock certifications.
+
+
+================================================================================
+SECTION 3: QUICK CHEAT-SHEET FOR THE PRESENTER
+================================================================================
+* What is NAAB code?
+  The National Association of Animal Breeders code (e.g. 29 = ABS Global, 7 = Select Sires, 200 = Semex).
+* What is CSS?
+  Certified Semen Services — international sanitary standard guaranteeing semen is free of
+  Campylobacter fetus, Trichomonas foetus, Leptospirosis, and BVD virus.
+* What is Julian Date?
+  YYDDD format stamped on straws (e.g. 24185 = Year 2024, 185th day = July 3rd, 2024).
+* What is Sexcel vs Ultra 4M?
+  Sexcel is ABS Global's proprietary sexing technology (CD-laser sorting). Ultra 4M is
+  STgenetics / World Wide Sires high-concentration 4-million cell technology. Both deliver ~90% female calves.
+================================================================================

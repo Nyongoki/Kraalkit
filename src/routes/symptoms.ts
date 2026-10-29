@@ -15,6 +15,61 @@ function normalize(str: string): string {
     .replace(/[\u0300-\u036f]/g, '');
 }
 
+// GET /api/symptoms – list all formal clinical symptoms
+router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const symptoms = await prisma.symptom.findMany({
+      select: {
+        id: true,
+        key: true,
+        nameEn: true,
+        description: true,
+        _count: { select: { terms: true } },
+      },
+      orderBy: { nameEn: 'asc' },
+    });
+    res.json(symptoms);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/symptoms – create a new formal clinical symptom
+router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const schema = z.object({
+      nameEn: z.string().min(2),
+      key: z.string().optional(),
+      description: z.string().optional(),
+    });
+
+    const { nameEn, key, description } = schema.parse(req.body);
+    const finalKey =
+      key?.trim() ||
+      nameEn
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+
+    const symptom = await prisma.symptom.upsert({
+      where: { key: finalKey },
+      update: {
+        nameEn: nameEn.trim(),
+        description: description?.trim() || undefined,
+      },
+      create: {
+        key: finalKey,
+        nameEn: nameEn.trim(),
+        description: description?.trim() || null,
+      },
+    });
+
+    res.status(201).json(symptom);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // GET /api/symptoms/search?q=&speciesId=&languageCode=
 // Supports multi-symptom comma/and delimited queries (e.g. "homa, kukohoa", "fever and diarrhea")
 router.get('/search', async (req: Request, res: Response, next: NextFunction) => {
@@ -194,10 +249,14 @@ router.post('/match', async (req: Request, res: Response, next: NextFunction) =>
     interface ScoredDisease {
       id: number;
       name: string;
+      nameSw?: string | null;
       slug: string;
       urgency: string;
       notifiable: boolean;
       firstAid: string | null;
+      firstAidSw?: string | null;
+      reviewed?: boolean;
+      reviewedBy?: string | null;
       score: number;
       matchedSymptoms: number;
       totalSymptoms: number;
@@ -228,10 +287,14 @@ router.post('/match', async (req: Request, res: Response, next: NextFunction) =>
       scores.push({
         id: disease.id,
         name: disease.name,
+        nameSw: disease.nameSw,
         slug: disease.slug,
         urgency: disease.urgency,
         notifiable: disease.notifiable,
         firstAid: disease.firstAid,
+        firstAidSw: disease.firstAidSw,
+        reviewed: disease.reviewed,
+        reviewedBy: disease.reviewedBy,
         score,
         matchedSymptoms: matchedLinks.length,
         totalSymptoms: dsLinks.length,
@@ -239,8 +302,11 @@ router.post('/match', async (req: Request, res: Response, next: NextFunction) =>
       });
     }
 
-    // Sort: EMERGENCY / notifiable first, contagious herd diseases if isHerd, then by score
+    // Rank diseases primarily by clinical match score descending, with urgency breaking close scores
     scores.sort((a, b) => {
+      if (Math.abs(b.score - a.score) >= 0.05) {
+        return b.score - a.score;
+      }
       if (isHerd) {
         if (a.isContagious && !b.isContagious) return -1;
         if (b.isContagious && !a.isContagious) return 1;
@@ -260,9 +326,13 @@ router.post('/match', async (req: Request, res: Response, next: NextFunction) =>
       conditions: top4.map((d) => ({
         id: d.id,
         name: d.name,
+        nameSw: d.nameSw,
         urgency: d.urgency,
         notifiable: d.notifiable,
         firstAid: d.firstAid,
+        firstAidSw: d.firstAidSw,
+        reviewed: d.reviewed,
+        reviewedBy: d.reviewedBy,
         score: Math.round(d.score * 100),
         matchedSymptoms: d.matchedSymptoms,
         totalSymptoms: d.totalSymptoms,

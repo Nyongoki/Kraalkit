@@ -1,7 +1,22 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Language, Species, SymptomResult, UserProfile, UserRole } from '../types';
+import { Language, Species, SymptomResult, UserProfile, UserRole, AnimalTriageGroup, TriagePayload } from '../types';
 import { InterfaceLang, translations } from '../lib/i18n';
-import { loginUser, registerUser, getMeProfile } from '../lib/api';
+import { findNearestKenyanCounty } from '../lib/kenyaCounties';
+import {
+  loginUser,
+  registerUser,
+  getMeProfile,
+  loginFarmer,
+  verifyFarmerCode,
+  requestFarmerCode,
+} from '../lib/api';
+
+export interface AnimalIdentification {
+  nameOrTag: string;
+  stage: string;
+  age: string;
+  notes?: string;
+}
 
 interface LocationState {
   latitude: number;
@@ -21,6 +36,11 @@ interface SessionContextType {
   selectedSpecies: Species | null;
   setSelectedSpecies: (species: Species | null) => void;
   
+  // Animal Identification
+  animalInfo: AnimalIdentification;
+  setAnimalInfo: React.Dispatch<React.SetStateAction<AnimalIdentification>>;
+  updateAnimalInfo: (field: keyof AnimalIdentification, val: string) => void;
+
   selectedSymptoms: SymptomResult[];
   addSymptom: (symptom: SymptomResult) => void;
   removeSymptom: (symptomId: number) => void;
@@ -31,10 +51,19 @@ interface SessionContextType {
   setIsHerd: (val: boolean) => void;
   herdSize: number;
   setHerdSize: (val: number) => void;
+  affectedCount: number;
+  setAffectedCount: (val: number) => void;
+
+  // Multi-group Triage Payload & State
+  triageGroups: AnimalTriageGroup[];
+  setTriageGroups: React.Dispatch<React.SetStateAction<AnimalTriageGroup[]>>;
+  triagePayload: TriagePayload | null;
+  setTriagePayload: (payload: TriagePayload | null) => void;
+  clearStaleResults: () => void;
   
   location: LocationState;
   setLocation: React.Dispatch<React.SetStateAction<LocationState>>;
-  useCurrentGps: () => Promise<void>;
+  useCurrentGps: () => Promise<{ success: boolean; latitude?: number; longitude?: number; county?: string; error?: string }>;
   
   // Authentication
   currentUser: UserProfile | null;
@@ -49,10 +78,21 @@ interface SessionContextType {
     county?: string;
     farmSize?: string;
   }) => Promise<void>;
+  loginPhone: (phone: string, pin: string) => Promise<void>;
+  registerPhone: (data: {
+    phone: string;
+    code: string;
+    pin: string;
+    name?: string;
+    county?: string;
+  }) => Promise<void>;
+  requestCode: (phone: string) => Promise<string | undefined>;
   logout: () => void;
   
   isAuthModalOpen: boolean;
   setAuthModalOpen: (open: boolean) => void;
+  authModalTab: 'login' | 'register';
+  openAuthModal: (tab?: 'login' | 'register') => void;
 }
 
 const defaultLocation: LocationState = {
@@ -65,17 +105,49 @@ const defaultLocation: LocationState = {
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [interfaceLang, setInterfaceLangState] = useState<InterfaceLang>('sw');
-  const [searchLanguage, setSearchLanguage] = useState<string>('sw');
+  const [interfaceLang, setInterfaceLangState] = useState<InterfaceLang>('en');
+  const [searchLanguage, setSearchLanguage] = useState<string>('en');
   const [selectedSpecies, setSelectedSpecies] = useState<Species | null>({
     id: 1,
     slug: 'dairy-cattle',
     name: 'Dairy Cattle',
   });
+  const [animalInfo, setAnimalInfo] = useState<AnimalIdentification>({
+    nameOrTag: '',
+    stage: 'Lactating Cow (In Milk)',
+    age: '',
+    notes: '',
+  });
+
+  const updateAnimalInfo = (field: keyof AnimalIdentification, val: string) => {
+    setAnimalInfo((prev) => ({ ...prev, [field]: val }));
+  };
+
   const [selectedSymptoms, setSelectedSymptoms] = useState<SymptomResult[]>([]);
   const [isHerd, setIsHerd] = useState<boolean>(false);
   const [herdSize, setHerdSize] = useState<number>(25);
+  const [affectedCount, setAffectedCountState] = useState<number>(1);
+  const [triageGroups, setTriageGroups] = useState<AnimalTriageGroup[]>([]);
+  const [triagePayload, setTriagePayload] = useState<TriagePayload | null>(null);
+
+  const clearStaleResults = () => {
+    // Clears stored conditions/stale evaluation payload when farmer edits inputs
+    setTriagePayload(null);
+  };
   const [location, setLocation] = useState<LocationState>(defaultLocation);
+
+  const setAffectedCount = (val: number) => {
+    const num = Math.max(1, val || 1);
+    setAffectedCountState(num);
+    if (num > 1) {
+      setIsHerd(true);
+      if (herdSize < num) {
+        setHerdSize(num * 2);
+      }
+    } else {
+      setIsHerd(false);
+    }
+  };
   
   // Auth state
   const [authToken, setAuthToken] = useState<string | null>(() => localStorage.getItem('auth_token'));
@@ -84,6 +156,12 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return saved ? JSON.parse(saved) : null;
   });
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<'login' | 'register'>('login');
+
+  const openAuthModal = (tab: 'login' | 'register' = 'login') => {
+    setAuthModalTab(tab);
+    setAuthModalOpen(true);
+  };
 
   // Sync token validation on load
   useEffect(() => {
@@ -105,7 +183,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setCurrentUser(res.user);
     localStorage.setItem('auth_token', res.token);
     localStorage.setItem('auth_user', JSON.stringify(res.user));
-    // Also sync location county if user has one
     if (res.user.county) {
       setLocation((prev) => ({ ...prev, county: res.user.county! }));
     }
@@ -130,6 +207,41 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setLocation((prev) => ({ ...prev, county: res.user.county! }));
     }
     setAuthModalOpen(false);
+  };
+
+  const loginPhone = async (phone: string, pin: string) => {
+    const res = await loginFarmer(phone, pin);
+    setAuthToken(res.token);
+    setCurrentUser(res.farmer);
+    localStorage.setItem('auth_token', res.token);
+    localStorage.setItem('auth_user', JSON.stringify(res.farmer));
+    if (res.farmer.county) {
+      setLocation((prev) => ({ ...prev, county: res.farmer.county! }));
+    }
+    setAuthModalOpen(false);
+  };
+
+  const registerPhone = async (data: {
+    phone: string;
+    code: string;
+    pin: string;
+    name?: string;
+    county?: string;
+  }) => {
+    const res = await verifyFarmerCode(data);
+    setAuthToken(res.token);
+    setCurrentUser(res.farmer);
+    localStorage.setItem('auth_token', res.token);
+    localStorage.setItem('auth_user', JSON.stringify(res.farmer));
+    if (res.farmer.county) {
+      setLocation((prev) => ({ ...prev, county: res.farmer.county! }));
+    }
+    setAuthModalOpen(false);
+  };
+
+  const requestCode = async (phone: string): Promise<string | undefined> => {
+    const res = await requestFarmerCode(phone);
+    return res.demoCode;
   };
 
   const logout = () => {
@@ -158,32 +270,52 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setSelectedSymptoms([]);
   };
 
-  const useCurrentGps = async (): Promise<void> => {
-    if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser.');
-      return;
+  const useCurrentGps = async (): Promise<{
+    success: boolean;
+    latitude?: number;
+    longitude?: number;
+    county?: string;
+    error?: string;
+  }> => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      return { success: false, error: 'Geolocation is not supported by your browser/device.' };
     }
     return new Promise((resolve) => {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          const nearest = findNearestKenyanCounty(lat, lng);
           setLocation({
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,
-            county: 'GPS Detected',
+            latitude: lat,
+            longitude: lng,
+            county: nearest.county,
             isGps: true,
           });
-          resolve();
+          resolve({
+            success: true,
+            latitude: lat,
+            longitude: lng,
+            county: nearest.county,
+          });
         },
-        () => {
-          alert('GPS location permission denied. Keeping county location.');
-          resolve();
+        (err) => {
+          let msg = 'Could not access device GPS.';
+          if (err.code === 1) {
+            msg = 'GPS permission was denied. Please allow location access or select your county from the dropdown.';
+          } else if (err.code === 2) {
+            msg = 'GPS position unavailable. Please choose your county manually.';
+          } else if (err.code === 3) {
+            msg = 'GPS request timed out. Please try again or select your county.';
+          }
+          resolve({ success: false, error: msg });
         },
-        { timeout: 8000 }
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
       );
     });
   };
 
-  const t = translations[interfaceLang] || translations.en;
+  const t = translations.en;
 
   return (
     <SessionContext.Provider
@@ -195,6 +327,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setSearchLanguage,
         selectedSpecies,
         setSelectedSpecies,
+        animalInfo,
+        setAnimalInfo,
+        updateAnimalInfo,
         selectedSymptoms,
         addSymptom,
         removeSymptom,
@@ -203,6 +338,13 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setIsHerd,
         herdSize,
         setHerdSize,
+        affectedCount,
+        setAffectedCount,
+        triageGroups,
+        setTriageGroups,
+        triagePayload,
+        setTriagePayload,
+        clearStaleResults,
         location,
         setLocation,
         useCurrentGps,
@@ -210,9 +352,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         authToken,
         login,
         register,
+        loginPhone,
+        registerPhone,
+        requestCode,
         logout,
         isAuthModalOpen,
         setAuthModalOpen,
+        authModalTab,
+        openAuthModal,
       }}
     >
       {children}

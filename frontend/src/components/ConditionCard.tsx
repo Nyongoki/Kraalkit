@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
 import { MatchedCondition } from '../types';
-import { AlertCircle, ChevronDown, ChevronUp, ShieldAlert, Sparkles, Biohazard, HeartPulse } from 'lucide-react';
+import { AlertCircle, ChevronDown, ChevronUp, ShieldAlert, Sparkles, Biohazard, HeartPulse, Lock } from 'lucide-react';
 import { useSession } from '../store/sessionContext';
 
 interface ConditionCardProps {
   condition: MatchedCondition;
+  isTopCard?: boolean;
+  onExplainClick?: () => void;
+  isCopilotOpen?: boolean;
+  canExplain?: boolean;
+  language?: 'en' | 'sw';
 }
 
-export const ConditionCard: React.FC<ConditionCardProps> = ({ condition }) => {
+export const ConditionCard: React.FC<ConditionCardProps> = ({
+  condition,
+  isTopCard = false,
+  onExplainClick,
+  isCopilotOpen = false,
+  canExplain = false,
+  language = 'en',
+}) => {
   const [showFirstAid, setShowFirstAid] = useState(false);
-  const { t } = useSession();
+  const { t, currentUser } = useSession();
+
+  const isSwahili = language === 'sw';
 
   const getUrgencyBadge = () => {
     switch (condition.urgency) {
@@ -44,38 +58,38 @@ export const ConditionCard: React.FC<ConditionCardProps> = ({ condition }) => {
 
   return (
     <div
-      className={`bg-white rounded-3xl shadow-xs border transition-all p-5 sm:p-6 ${
+      className={`bg-white rounded-2xl shadow-2xs border transition-all p-4 sm:p-5 ${
         condition.callVetNow
-          ? 'border-rose-400 ring-2 ring-rose-100'
+          ? 'border-rose-400 ring-1 ring-rose-200'
           : condition.isContagious
           ? 'border-purple-300 ring-1 ring-purple-100'
           : 'border-slate-200/90'
       }`}
     >
       {/* Top Header */}
-      <div className="flex items-start justify-between gap-3 mb-2.5">
+      <div className="flex items-start justify-between gap-3 mb-2">
         <div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-lg sm:text-xl font-black text-slate-900 leading-tight">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <h3 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
               {condition.name}
             </h3>
             {condition.isContagious && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase bg-purple-100 text-purple-800 px-2.5 py-0.5 rounded-full border border-purple-200 animate-pulse">
-                <Biohazard className="w-3.5 h-3.5 text-purple-700" />
-                Contagious Epizootic
+              <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full border border-purple-200">
+                <Biohazard className="w-3 h-3 text-purple-700" />
+                Contagious
               </span>
             )}
           </div>
-          <p className="text-xs text-slate-500 font-medium mt-1">
+          <p className="text-[11px] text-slate-500 font-medium mt-0.5">
             Clinical correlation: {condition.matchedSymptoms} of {condition.totalSymptoms} key symptom markers
           </p>
         </div>
 
-        <div className="text-right flex-shrink-0 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-2xl">
-          <span className="text-xl sm:text-2xl font-black text-emerald-700">
+        <div className="text-right flex-shrink-0 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl">
+          <span className="text-lg sm:text-xl font-black text-emerald-700">
             {condition.score}%
           </span>
-          <p className="text-[10px] text-slate-400 uppercase font-black tracking-wider">Match</p>
+          <p className="text-[9px] text-slate-400 uppercase font-black tracking-wider">Match</p>
         </div>
       </div>
 
@@ -116,8 +130,44 @@ export const ConditionCard: React.FC<ConditionCardProps> = ({ condition }) => {
         </div>
       )}
 
+      {/* Explain this result CTA button */}
+      {canExplain && onExplainClick && (
+        <div className="pt-3.5 mt-2 border-t border-slate-100 space-y-1.5">
+          <button
+            type="button"
+            onClick={onExplainClick}
+            className={`w-full py-3 px-4 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98] ${
+              !currentUser
+                ? 'bg-slate-900 hover:bg-slate-800 text-amber-200 border border-amber-400/40'
+                : isCopilotOpen
+                ? 'bg-emerald-950 text-white ring-2 ring-emerald-500 shadow-inner'
+                : 'bg-emerald-700 hover:bg-emerald-800 text-white hover:shadow-md'
+            }`}
+          >
+            {!currentUser ? (
+              <>
+                <Lock className="w-4 h-4 text-amber-300" />
+                <span>Log In to Explain with Vet Co-Pilot</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4 text-emerald-300 animate-pulse" />
+                <span>
+                  {isCopilotOpen ? 'Hide Co-Pilot Explanation' : 'Explain this result (Vet Co-Pilot)'}
+                </span>
+              </>
+            )}
+          </button>
+          <p className="text-[11px] text-slate-500 text-center font-medium">
+            {!currentUser
+              ? 'Vet Co-Pilot requires account login to view clinical correlation & questions'
+              : 'Explanation generated and checked against vet-reviewed clinical text'}
+          </p>
+        </div>
+      )}
+
       {/* First Aid & Farm Actions Accordion */}
-      {condition.firstAid && (
+      {condition.firstAid && !isCopilotOpen && (
         <div className="border-t border-slate-100 pt-3 mt-1">
           <button
             type="button"
@@ -125,7 +175,7 @@ export const ConditionCard: React.FC<ConditionCardProps> = ({ condition }) => {
             className="flex items-center justify-between w-full text-xs font-black text-slate-800 hover:text-emerald-800 py-1 transition-colors"
           >
             <span className="flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-emerald-600" />
+              <HeartPulse className="w-4 h-4 text-emerald-600" />
               <span>{t.firstAidInstructions}</span>
             </span>
             {showFirstAid ? (

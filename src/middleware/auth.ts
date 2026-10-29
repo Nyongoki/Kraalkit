@@ -22,6 +22,79 @@ export interface AuthRequest extends Request {
   };
 }
 
+export async function optionalAuth(req: AuthRequest, _res: Response, next: NextFunction) {
+  try {
+    const auth = req.headers.authorization;
+    if (!auth?.startsWith('Bearer ')) {
+      return next();
+    }
+
+    const token = auth.slice(7);
+    const payload = jwt.verify(token, JWT_SECRET) as any;
+
+    if (payload.farmerId) {
+      const farmer = await prisma.farmer.findUnique({
+        where: { id: payload.farmerId },
+      });
+      if (farmer) {
+        req.farmer = {
+          id: farmer.id,
+          phone: farmer.phone,
+          name: farmer.name,
+          role: farmer.role,
+          county: farmer.county,
+        };
+        req.user = {
+          id: farmer.id,
+          phone: farmer.phone,
+          name: farmer.name,
+          role: farmer.role,
+          county: farmer.county,
+        };
+      }
+      return next();
+    }
+
+    if (payload.userId) {
+      const user = await prisma.user.findUnique({
+        where: { id: payload.userId },
+      });
+      if (user) {
+        req.user = {
+          id: user.id,
+          email: user.email,
+          phone: user.phone || undefined,
+          name: user.name,
+          role: user.role,
+          county: user.county,
+        };
+
+        const farmerPhone = (user.phone && user.phone.trim().length > 0)
+          ? user.phone.trim()
+          : `USR-${user.id}`;
+
+        let farmer = await prisma.farmer.findUnique({ where: { phone: farmerPhone } });
+        if (!farmer) {
+          farmer = await prisma.farmer.create({
+            data: {
+              name: user.name,
+              phone: farmerPhone,
+              county: user.county,
+              role: user.role,
+            },
+          });
+        }
+        req.farmer = farmer;
+      }
+      return next();
+    }
+
+    return next();
+  } catch {
+    return next();
+  }
+}
+
 export async function requireAuth(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     const auth = req.headers.authorization;
@@ -67,21 +140,24 @@ export async function requireAuth(req: AuthRequest, res: Response, next: NextFun
         role: user.role,
         county: user.county,
       };
-      // If user is a farmer, also make sure a Farmer record exists or is linked
-      if (user.phone) {
-        let farmer = await prisma.farmer.findUnique({ where: { phone: user.phone } });
-        if (!farmer) {
-          farmer = await prisma.farmer.create({
-            data: {
-              name: user.name,
-              phone: user.phone,
-              county: user.county,
-              role: user.role,
-            },
-          });
-        }
-        req.farmer = farmer;
+
+      // Always link or create a Farmer record so breeding ledger and events work seamlessly
+      const farmerPhone = (user.phone && user.phone.trim().length > 0)
+        ? user.phone.trim()
+        : `USR-${user.id}`;
+
+      let farmer = await prisma.farmer.findUnique({ where: { phone: farmerPhone } });
+      if (!farmer) {
+        farmer = await prisma.farmer.create({
+          data: {
+            name: user.name,
+            phone: farmerPhone,
+            county: user.county,
+            role: user.role,
+          },
+        });
       }
+      req.farmer = farmer;
       return next();
     }
 

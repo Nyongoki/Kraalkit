@@ -90,7 +90,7 @@ router.get('/clusters', async (req: Request, res: Response, next: NextFunction) 
         reportCount: number;
         animalsAffected: number;
         animalsDead: number;
-        species: { slug: string; name: string }[];
+        species: { slug: string; name: string; affected: number; dead: number }[];
         symptoms: { key: string; nameEn: string; count: number }[];
         isSimulated: boolean;
       }
@@ -124,7 +124,14 @@ router.get('/clusters', async (req: Request, res: Response, next: NextFunction) 
           reportCount: 1,
           animalsAffected: report.animalsAffected,
           animalsDead: report.animalsDead,
-          species: [report.species],
+          species: [
+            {
+              slug: report.species.slug,
+              name: report.species.name,
+              affected: report.animalsAffected,
+              dead: report.animalsDead,
+            },
+          ],
           symptoms: report.symptoms.map((rs) => ({ key: rs.symptom.key, nameEn: rs.symptom.nameEn, count: 1 })),
           isSimulated: report.isSimulated,
         });
@@ -133,9 +140,18 @@ router.get('/clusters', async (req: Request, res: Response, next: NextFunction) 
         existing.animalsAffected += report.animalsAffected;
         existing.animalsDead += report.animalsDead;
 
-        // Merge species
-        if (!existing.species.find((s) => s.slug === report.species.slug)) {
-          existing.species.push(report.species);
+        // Merge species with affected and dead counts
+        const sp = existing.species.find((s) => s.slug === report.species.slug);
+        if (sp) {
+          sp.affected += report.animalsAffected;
+          sp.dead += report.animalsDead;
+        } else {
+          existing.species.push({
+            slug: report.species.slug,
+            name: report.species.name,
+            affected: report.animalsAffected,
+            dead: report.animalsDead,
+          });
         }
 
         // Merge symptoms with counts
@@ -152,6 +168,7 @@ router.get('/clusters', async (req: Request, res: Response, next: NextFunction) 
 
     const clusters = [...clusterMap.values()].map((c) => ({
       ...c,
+      species: c.species.sort((a, b) => b.affected - a.affected),
       symptoms: c.symptoms.sort((a, b) => b.count - a.count),
     }));
 

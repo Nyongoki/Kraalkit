@@ -1,11 +1,94 @@
+# Dependencies
 node_modules/
 */node_modules/
+frontend/node_modules/
+.pnp
+.pnp.js
+
+# Production Builds
 dist/
+build/
 frontend/dist/
+frontend/build/
+*.tsbuildinfo
+
+# Environment & Credentials
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 *.env
-*.env.local
-.DS_Store
-Thumbs.db
+*.env.*
+!.env.example
+*api-key*
+*.key
+*.pem
+rax-ai-key-api-key.txt
+
+# Internal Documentation & Build Guides
+*Build Guide.md
+AI Straw Verification Build Guide.md
+Livestock Health Assistant Backend Build Guide.md
+Livestock Health Assistant Frontend Build Guide.md
+AI_USAGE.md
+ai_usage.md
+*ai_usage*.md
+*AI_USAGE*.md
+AI_ARCHITECTURE.md
+ai_architecture.md
+*ai_architecture*
+*AI_ARCHITECTURE*
+*ai*architecture*
+*AI*Architecture*
+*architecture*
+MULTILINGUAL_DICTIONARY_ARCHITECTURE.md
+*dictionary*.md
+*DICTIONARY*.md
+vet_copilot.md
+*copilot*.md
+*.md
+!README.md
+
+# Database & SQLite files
 prisma/dev.db
+prisma/dev.db-journal
 prisma/*.db
+prisma/*.db-journal
+*.sqlite
+*.sqlite3
+
+# Logs & Diagnostics
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Testing & Coverage
+coverage/
+.nyc_output/
+
+# IDE & OS Metadata
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary / Scratch
+tmp/
+temp/
+scratch/
+.system_generated/

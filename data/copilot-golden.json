@@ -1,0 +1,110 @@
+[
+  {
+    "scenario": "cattle_fmd_en",
+    "promptVersion": "v1.0",
+    "modelName": "rax-4.0",
+    "speciesId": 1,
+    "conditionId": 1,
+    "language": "en",
+    "total": 25,
+    "sick": 4,
+    "dead": 0,
+    "firstAidVersion": 1,
+    "whyRankedFirst": "Three key signs of foot and mouth disease match what was reported. Four of 25 cattle are affected, which fits the pattern of a contagious herd outbreak.",
+    "questionsForVet": [
+      "Can you take samples to confirm if this is foot and mouth disease?",
+      "How should we protect the other 21 healthy cattle in the herd?",
+      "What biosecurity precautions should we take for milk collection and feeding gear?"
+    ]
+  },
+  {
+    "scenario": "cattle_fmd_sw",
+    "promptVersion": "v1.0",
+    "modelName": "rax-4.0",
+    "speciesId": 1,
+    "conditionId": 1,
+    "language": "sw",
+    "total": 25,
+    "sick": 4,
+    "dead": 0,
+    "firstAidVersion": 1,
+    "whyRankedFirst": "Dalili tatu muhimu za ugonjwa wa miguu na midomo zinalingana na ripoti yako. Ng'ombe 4 kati ya 25 wameathirika, na mfumo huu unaendana na mlipuko wa kundi.",
+    "questionsForVet": [
+      "Je, unaweza kupima ili kuthibitisha kama huu ni ugonjwa wa miguu na midomo?",
+      "Ni hatua gani zichukuliwe kulinda wale ng'ombe 21 ambao hawajaathirika?",
+      "Tuchukue tahadhari zipi za usafi kuhusu maziwa na vyombo vya kulishia?"
+    ]
+  },
+  {
+    "scenario": "poultry_newcastle_en",
+    "promptVersion": "v1.0",
+    "modelName": "rax-4.0",
+    "speciesId": 4,
+    "conditionId": 4,
+    "language": "en",
+    "total": 100,
+    "sick": 30,
+    "dead": 5,
+    "firstAidVersion": 1,
+    "whyRankedFirst": "Key signs match Newcastle disease in poultry. With 30 sick birds and 5 dead out of 100, the high flock mortality fits this acute condition.",
+    "questionsForVet": [
+      "Can a post-mortem examination confirm Newcastle disease?",
+      "How quickly should the remaining 65 healthy birds be vaccinated or protected?",
+      "What is the safest protocol for disposing of the dead birds and cleaning the coop?"
+    ]
+  },
+  {
+    "scenario": "poultry_newcastle_sw",
+    "promptVersion": "v1.0",
+    "modelName": "rax-4.0",
+    "speciesId": 4,
+    "conditionId": 4,
+    "language": "sw",
+    "total": 100,
+    "sick": 30,
+    "dead": 5,
+    "firstAidVersion": 1,
+    "whyRankedFirst": "Dalili zilizoripotiwa zinalingana na ugonjwa wa kideri kwa kuku. Ndege 30 wakiwa wagonjwa na 5 wamekufa kati ya 100, vifo hivi vinaendana na ugonjwa huu mkali.",
+    "questionsForVet": [
+      "Je, uchunguzi wa mzoga unaweza kuthibitisha ugonjwa wa kideri?",
+      "Ni kwa haraka gani kuku 65 waliobaki wazima wanapaswa kulindwa?",
+      "Njia gani salama zaidi ya kuteketeza mizoga na kusafisha banda?"
+    ]
+  },
+  {
+    "scenario": "cattle_ecf_en",
+    "promptVersion": "v1.0",
+    "modelName": "rax-4.0",
+    "speciesId": 1,
+    "conditionId": 2,
+    "language": "en",
+    "total": 15,
+    "sick": 2,
+    "dead": 0,
+    "firstAidVersion": 1,
+    "whyRankedFirst": "Reported signs including swollen lymph nodes and high fever match East Coast fever. Two of 15 cattle show acute signs consistent with tick-borne exposure.",
+    "questionsForVet": [
+      "Can you examine blood smears to test for East Coast fever parasites?",
+      "What tick control protocol should be applied to protect the other 13 cattle?",
+      "Is supportive fluid care needed immediately for the 2 sick animals?"
+    ]
+  },
+  {
+    "scenario": "cattle_ecf_sw",
+    "promptVersion": "v1.0",
+    "modelName": "rax-4.0",
+    "speciesId": 1,
+    "conditionId": 2,
+    "language": "sw",
+    "total": 15,
+    "sick": 2,
+    "dead": 0,
+    "firstAidVersion": 1,
+    "whyRankedFirst": "Dalili zilizotajwa kama tezi kuvimba na homa kali zinalingana na homa ya kukauka. Ng'ombe 2 kati ya 15 wanaonyesha dalili kali zinazoendana na kupe.",
+    "questionsForVet": [
+      "Je, unaweza kupima sampuli za damu kubaini vimelea vya homa ya kukauka?",
+      "Ni mpango gani wa kudhibiti kupe uwekwe kwa ng'ombe 13 waliobaki?",
+      "Je, wanyama hawa 2 wagonjwa wanahitaji huduma ya maji na kivuli mara moja?"
+    ]
+  }
+]

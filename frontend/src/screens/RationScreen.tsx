@@ -131,35 +131,35 @@ export const RationScreen: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-4 pb-12">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-amber-700 via-amber-800 to-yellow-900 text-white p-6 sm:p-7 rounded-3xl shadow-sm flex items-center justify-between">
+      <div className="bg-gradient-to-r from-amber-800 via-amber-900 to-yellow-950 text-white p-4 sm:p-5 rounded-2xl border border-amber-700/50 shadow-2xs flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Wheat className="w-5 h-5 text-amber-300" />
-            <h2 className="text-xl sm:text-2xl font-black">
+          <div className="flex items-center gap-2 mb-0.5">
+            <Wheat className="w-4 h-4 text-amber-300" />
+            <h2 className="text-sm sm:text-base font-black">
               {t.rationTitle} — {selectedSpecies?.name}
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-amber-100 font-medium max-w-2xl">
+          <p className="text-xs text-amber-100 font-medium max-w-2xl">
             Balance protein, energy, calcium and phosphorus proportions to maximize milk and meat yield while keeping feed expenses minimal.
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
         {/* Left Column: Stage Selector & Feed Inventory */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="bg-white p-5 rounded-3xl border border-gray-200 shadow-xs space-y-4">
+        <div className="lg:col-span-5 space-y-3">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
             {/* Stage Selector */}
             <div>
-              <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider block mb-1.5">
+              <label className="text-[10px] font-black text-slate-700 uppercase tracking-wider block mb-1">
                 {t.selectStage}
               </label>
               <select
                 value={selectedStage}
                 onChange={(e) => setSelectedStage(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-300 rounded-2xl p-3 text-xs font-bold text-gray-900 focus:ring-2 focus:ring-primary-500"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-primary-500"
               >
                 {stages.map((st) => (
                   <option key={st.key} value={st.key}>
@@ -171,31 +171,31 @@ export const RationScreen: React.FC = () => {
 
             {/* Feeds on Farm */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-[10px] font-black text-slate-700 uppercase tracking-wider">
                   {t.availableFeeds}
                 </label>
-                <span className="text-xs text-gray-400 font-semibold">
+                <span className="text-[10px] text-slate-400 font-bold">
                   {farmerFeeds.length} feeds
                 </span>
               </div>
 
-              <div className="space-y-2 mb-3">
+              <div className="space-y-1.5 mb-2.5">
                 {farmerFeeds.map((feed, idx) => (
                   <div
                     key={feed.name}
-                    className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-2xl"
+                    className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl"
                   >
                     <div>
-                      <span className="text-xs font-bold text-gray-900 block leading-tight">
+                      <span className="text-xs font-bold text-slate-900 block leading-tight">
                         {feed.name}
                       </span>
-                      <span className="text-[11px] text-gray-500">
+                      <span className="text-[10px] text-slate-500">
                         {feed.kg} kg daily allotment
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <input
                         type="number"
                         min="0.5"
@@ -207,14 +207,14 @@ export const RationScreen: React.FC = () => {
                             prev.map((f, i) => (i === idx ? { ...f, kg: val } : f))
                           );
                         }}
-                        className="w-20 bg-white border border-gray-300 rounded-xl p-2 text-xs font-extrabold text-center"
+                        className="w-16 bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-extrabold text-center"
                       />
                       <button
                         type="button"
                         onClick={() => handleRemoveFeed(idx)}
-                        className="text-gray-400 hover:text-red-600 p-1 rounded-lg"
+                        className="text-slate-400 hover:text-rose-600 p-1 rounded-lg"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -222,11 +222,11 @@ export const RationScreen: React.FC = () => {
               </div>
 
               {/* Add Feed Dropdown + Input */}
-              <div className="pt-3 border-t border-gray-100 flex gap-2">
+              <div className="pt-2 border-t border-slate-100 flex gap-1.5">
                 <select
                   value={newFeedName}
                   onChange={(e) => setNewFeedName(e.target.value)}
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-xl p-2 text-xs font-bold text-gray-900"
+                  className="flex-1 bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs font-bold text-slate-900"
                 >
                   {commonFeedOptions.map((f) => (
                     <option key={f} value={f}>
@@ -239,14 +239,14 @@ export const RationScreen: React.FC = () => {
                   min="1"
                   value={newFeedKg}
                   onChange={(e) => setNewFeedKg(parseFloat(e.target.value) || 1)}
-                  className="w-16 bg-gray-50 border border-gray-300 rounded-xl p-2 text-xs font-bold text-center"
+                  className="w-14 bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs font-bold text-center"
                 />
                 <button
                   type="button"
                   onClick={handleAddFeed}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold px-3 py-2 rounded-xl border border-gray-300 active:scale-95"
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-slate-300 active:scale-95"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
 
@@ -255,12 +255,12 @@ export const RationScreen: React.FC = () => {
                 type="button"
                 onClick={handleCalculate}
                 disabled={calculating || farmerFeeds.length === 0}
-                className="w-full mt-4 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs sm:text-sm py-3.5 px-4 rounded-2xl shadow-sm flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50"
+                className="w-full mt-3 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs py-2.5 px-3 rounded-xl shadow-2xs flex items-center justify-center gap-1.5 active:scale-95 transition-all disabled:opacity-50"
               >
                 {calculating ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  <Calculator className="w-4 h-4" />
+                  <Calculator className="w-3.5 h-3.5" />
                 )}
                 <span>{calculating ? 'Balancing Linear Program...' : t.calculateMix}</span>
               </button>
@@ -269,21 +269,23 @@ export const RationScreen: React.FC = () => {
         </div>
 
         {/* Right Column: Mix Breakdown, Nutrient Analysis & Recommendations */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className="lg:col-span-7 space-y-3">
           {error && (
-            <div className="bg-red-50 border border-red-200 p-4 rounded-3xl text-red-800 text-xs font-bold">
+            <div className="bg-rose-50 border border-rose-200 p-3 rounded-xl text-rose-800 text-xs font-bold">
               {error}
             </div>
           )}
 
           {!result && !calculating && (
-            <div className="bg-white p-12 rounded-3xl border border-gray-200 text-center shadow-xs">
-              <Wheat className="w-12 h-12 text-amber-500 mx-auto mb-3" />
-              <h3 className="text-base font-extrabold text-gray-900 mb-1">
-                Configure your feed inventory on the left
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 text-center shadow-2xs space-y-1.5">
+              <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center mx-auto mb-1">
+                <Wheat className="w-4 h-4" />
+              </div>
+              <h3 className="text-xs font-black text-slate-900">
+                Configure Your Feed Inventory
               </h3>
-              <p className="text-xs text-gray-500 max-w-sm mx-auto">
-                Select your animal stage and list what feeds are in your store to see the nutrient breakdown and optimal proportions.
+              <p className="text-[11px] text-slate-500 max-w-sm mx-auto leading-relaxed">
+                Select your animal stage and list what feeds are in your store to balance energy, crude protein, and minerals.
               </p>
             </div>
           )}

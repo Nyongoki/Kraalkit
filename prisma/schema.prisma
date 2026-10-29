@@ -95,14 +95,21 @@ model SymptomTerm {
 }
 
 model Disease {
-  id         Int              @id @default(autoincrement())
-  slug       String           @unique
-  name       String
-  urgency    Urgency
-  notifiable Boolean          @default(false)
-  firstAid   String?          @db.Text
-  species    DiseaseSpecies[]
-  symptoms   DiseaseSymptom[]
+  id               Int              @id @default(autoincrement())
+  slug             String           @unique
+  name             String
+  nameSw           String?
+  urgency          Urgency
+  notifiable       Boolean          @default(false)
+  firstAid         String?          @db.Text
+  firstAidSw       String?          @db.Text
+  fallbackAdvice   String?          @db.Text
+  fallbackAdviceSw String?          @db.Text
+  reviewed         Boolean          @default(false)
+  reviewedBy       String?
+  firstAidVersion  Int              @default(1)
+  species          DiseaseSpecies[]
+  symptoms         DiseaseSymptom[]
 }
 
 model DiseaseSpecies {

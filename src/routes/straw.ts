@@ -3,8 +3,9 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../lib/prisma';
-import { decodeStrawText } from '../lib/strawDecoder';
-import { requireAuth, requireAdmin, AuthRequest } from '../middleware/auth';
+import { decodeStrawText, reconcileWithReceipt } from '../lib/strawDecoder';
+import { aiDecodeStrawText } from '../lib/strawAiDecoder';
+import { requireAuth, requireAdmin, optionalAuth, AuthRequest } from '../middleware/auth';
 import {
   ProductType,
   Confidence,
@@ -35,9 +36,9 @@ function parseId(param: string | string[]): number {
 }
 
 // ==========================================
-// 1. POST /api/decode (Open to everyone)
+// 1. POST /api/decode & /api/straw/decode (Open to everyone, with optional authenticated farmer context)
 // ==========================================
-router.post('/decode', async (req: AuthRequest, res: Response, next: NextFunction) => {
+const decodeHandler = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const schema = z.object({
       rawText: z.string().min(1, 'Straw text is required'),
@@ -56,7 +57,81 @@ router.post('/decode', async (req: AuthRequest, res: Response, next: NextFunctio
   } catch (err) {
     next(err);
   }
-});
+};
+
+router.post('/decode', optionalAuth, decodeHandler);
+router.post('/straw/decode', optionalAuth, decodeHandler);
+
+// ==========================================
+// 1a. POST /api/straw/ai-decode & /api/ai-decode
+// Intelligent LLM-assisted straw completion
+// ==========================================
+const aiDecodeHandler = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const schema = z.object({
+      rawText: z.string().min(1, 'Straw text is required'),
+      county: z.string().optional(),
+      currentDecoded: z.any().optional(),
+    });
+
+    const { rawText, county, currentDecoded } = schema.parse(req.body);
+
+    const result = await aiDecodeStrawText(
+      rawText,
+      currentDecoded,
+      county || req.user?.county || null
+    );
+
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+router.post('/straw/ai-decode', optionalAuth, aiDecodeHandler);
+router.post('/ai-decode', optionalAuth, aiDecodeHandler);
+
+// ==========================================
+// 1b. POST /api/straw/reconcile & /api/reconcile
+// Post-Insemination Straw vs Receipt Audit (Open to all farmers)
+// ==========================================
+const reconcileHandler = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const schema = z.object({
+      rawText: z.string().min(1, 'Straw text is required'),
+      county: z.string().optional(),
+      receipt: z.object({
+        cowName: z.string().optional(),
+        cowTag: z.string().optional(),
+        receiptBreed: z.string().optional(),
+        receiptBull: z.string().optional(),
+        receiptProductType: z.string().optional(),
+        receiptTechnician: z.string().optional(),
+        pricePaidKsh: z.number().optional(),
+      }),
+    });
+
+    const { rawText, county, receipt } = schema.parse(req.body);
+
+    const decoded = await decodeStrawText(
+      rawText,
+      county || req.user?.county || null,
+      req.farmer?.id || req.user?.id || null
+    );
+
+    const reconciliation = reconcileWithReceipt(decoded, receipt);
+
+    res.json({
+      decoded,
+      reconciliation,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+router.post('/straw/reconcile', reconcileHandler);
+router.post('/reconcile', reconcileHandler);
 
 // ==========================================
 // 2. FARMER AUTHENTICATION (Phone + PIN)
@@ -238,7 +313,10 @@ router.post('/events', requireAuth, async (req: AuthRequest, res: Response, next
     });
 
     const data = schema.parse(req.body);
-    const farmerId = req.farmer!.id;
+    const farmerId = req.farmer?.id;
+    if (!farmerId) {
+      return res.status(401).json({ error: 'Farmer profile not found for this account' });
+    }
 
     // Attach or create Cow if name or tag is provided
     let cowId: number | undefined;
@@ -307,7 +385,48 @@ router.post('/events', requireAuth, async (req: AuthRequest, res: Response, next
       }
     }
 
-    res.status(201).json(event);
+    // Automated Fraud Check 2: Duplicate Straw Registered Across Other Farms
+    const cleanedRaw = data.rawText.trim();
+    const otherEvents = await prisma.inseminationEvent.findMany({
+      where: {
+        farmerId: { not: farmerId },
+      },
+      include: {
+        cow: true,
+        farmer: { select: { county: true } },
+      },
+    });
+
+    const existingOtherEvent = otherEvents.find(
+      (evt) => evt.rawText && evt.rawText.trim().toLowerCase() === cleanedRaw.toLowerCase()
+    );
+
+    let duplicateWarning: string | null = null;
+    if (existingOtherEvent) {
+      const priorDate = existingOtherEvent.eventDate
+        ? new Date(existingOtherEvent.eventDate).toISOString().split('T')[0]
+        : 'earlier';
+      const priorCow = existingOtherEvent.cow?.name ? `cow "${existingOtherEvent.cow.name}"` : 'a cow';
+      const priorTag = existingOtherEvent.cow?.tagNo ? ` (Ear Tag: ${existingOtherEvent.cow.tagNo})` : '';
+      const priorCounty = existingOtherEvent.county || existingOtherEvent.farmer?.county || 'Kenya';
+
+      duplicateWarning = `⚠️ Duplicate Straw Flagged: This physical straw tube was previously recorded by another farm on ${priorCow}${priorTag} in ${priorCounty} on ${priorDate}. A fraud flag has been filed for KVB inspection.`;
+
+      await prisma.fraudFlag.create({
+        data: {
+          type: FlagType.HIGH_QUERY_COUNT,
+          severity: Severity.HIGH,
+          eventId: event.id,
+          providerId: data.technicianId || data.providerId || null,
+          details: `Duplicate straw registered: Tube previously registered under reference ${existingOtherEvent.referenceNo} for ${priorCow}${priorTag} in ${priorCounty} on ${priorDate}. Single straws cannot be reused.`,
+        },
+      });
+    }
+
+    res.status(201).json({
+      ...event,
+      duplicateWarning,
+    });
   } catch (err) {
     next(err);
   }
@@ -316,7 +435,10 @@ router.post('/events', requireAuth, async (req: AuthRequest, res: Response, next
 // GET /api/events (List Farmer's own records)
 router.get('/events', requireAuth, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const farmerId = req.farmer!.id;
+    const farmerId = req.farmer?.id;
+    if (!farmerId) {
+      return res.json([]);
+    }
     const events = await prisma.inseminationEvent.findMany({
       where: { farmerId },
       include: {
@@ -367,6 +489,61 @@ router.get('/events/:id', requireAuth, async (req: AuthRequest, res: Response, n
     }
 
     res.json(event);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PATCH /api/events/:id (Update cow or price details)
+router.patch('/events/:id', requireAuth, async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const id = parseId(req.params.id);
+    const schema = z.object({
+      cowName: z.string().optional(),
+      cowTag: z.string().optional(),
+      priceKsh: z.number().optional(),
+    });
+
+    const data = schema.parse(req.body);
+
+    const event = await prisma.inseminationEvent.findUnique({
+      where: { id },
+      include: { cow: true },
+    });
+
+    if (!event) return res.status(404).json({ error: 'Insemination event not found' });
+    if (event.farmerId !== req.farmer?.id && req.user?.role !== 'ADMIN') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    if (event.cowId && (data.cowName || data.cowTag)) {
+      await prisma.cow.update({
+        where: { id: event.cowId },
+        data: {
+          name: data.cowName || undefined,
+          tagNo: data.cowTag || undefined,
+        },
+      });
+    }
+
+    const updated = await prisma.inseminationEvent.update({
+      where: { id },
+      data: {
+        priceKsh: data.priceKsh !== undefined ? data.priceKsh : undefined,
+      },
+      include: {
+        cow: true,
+        breed: true,
+        supplier: true,
+        bull: true,
+        technician: true,
+        provider: true,
+        outcome: true,
+        flags: true,
+      },
+    });
+
+    res.json(updated);
   } catch (err) {
     next(err);
   }

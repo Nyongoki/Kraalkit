@@ -88,18 +88,18 @@ export const VerifyTermsScreen: React.FC<VerifyTermsScreenProps> = () => {
   const isVet = currentUser && (currentUser.role === 'VET' || currentUser.role === 'ADMIN');
 
   return (
-    <div className="space-y-6 pb-12 max-w-4xl mx-auto">
+    <div className="space-y-4 pb-12 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-xs flex items-center justify-between">
+      <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center flex-shrink-0">
-            <ShieldCheck className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center flex-shrink-0">
+            <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl font-extrabold text-gray-900">
+            <h2 className="text-base font-extrabold text-slate-900">
               {t.vetPortal}
             </h2>
-            <p className="text-xs text-gray-500 font-medium">
+            <p className="text-xs text-slate-500 font-medium">
               Review and certify community-submitted local symptom words for live search ranking
             </p>
           </div>
@@ -109,7 +109,7 @@ export const VerifyTermsScreen: React.FC<VerifyTermsScreenProps> = () => {
           <button
             type="button"
             onClick={logout}
-            className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-red-600 bg-gray-50 hover:bg-red-50 p-2.5 rounded-xl border border-gray-200 transition-colors"
+            className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-red-600 bg-slate-50 hover:bg-red-50 p-2 rounded-xl border border-slate-200 transition-colors"
             title="Sign out"
           >
             <LogOut className="w-4 h-4" />
@@ -120,7 +120,7 @@ export const VerifyTermsScreen: React.FC<VerifyTermsScreenProps> = () => {
 
       {!isVet ? (
         /* Login Form */
-        <div className="bg-white p-8 rounded-3xl border border-gray-200 shadow-xs max-w-md mx-auto">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs max-w-md mx-auto">
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="text-center mb-4">
               <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mx-auto mb-2">

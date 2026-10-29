@@ -15,6 +15,7 @@ import termsRouter from './routes/terms';
 import reportsRouter from './routes/reports';
 import authRouter from './routes/auth';
 import strawRouter from './routes/straw';
+import copilotRouter from './routes/copilot';
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/api/vets', vetsRouter);
 app.use('/api/ration', rationRouter);
 app.use('/api/terms', termsRouter);
 app.use('/api/reports', reportsRouter);
+app.use('/api/copilot', copilotRouter);
 app.use('/api', strawRouter);
 
 app.get('/health', (_req, res) => {
